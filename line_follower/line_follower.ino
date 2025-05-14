@@ -6,7 +6,7 @@ int line_sensors[3];
 float error = 0;
 float control = 0;
 float kp = 50.0;
-float rgb_colors[3];
+int rgb_colors[3];
 
 
 void setup() {
@@ -24,16 +24,19 @@ void setup() {
 void loop() {
   while (!alvik.get_touch_cancel()){
     float topDistance = alvik.get_distance_top();
-    Serial.print(topDistance);
-    Serial.print("\n");
+    // Serial.print(topDistance);
+    // Serial.print("\n");
     alvik.get_line_sensors(line_sensors[0], line_sensors[1], line_sensors[2]);
+    alvik.get_color_raw(rgb_colors[0],rgb_colors[1],rgb_colors[2]);
     error = calculate_center(line_sensors[0], line_sensors[1], line_sensors[2]);
     control = error * kp;
-    if (topDistance <= 13.25){ // if the distance is below a certain threshold, the Alvik stops then moves forward to a designated area, where it will search for the ball
-      alvik.brake();
-      delay(2000);
-      alvik.set_wheels_speed(30-control,30+control);
-      delay(2000);
+    Serial.print(rgb_colors[0]);
+    Serial.print("\t");
+    Serial.print(rgb_colors[1]);
+    Serial.print("\t");
+    Serial.print(rgb_colors[2]);
+    Serial.print("\n");
+    if ((rgb_colors[0] == 6 || rgb_colors[0] == 5) && (rgb_colors[1] == 5) && (rgb_colors[2] == 5 || rgb_colors[2] == 4)){ // if the distance is below a certain threshold, the Alvik stops then moves forward to a designated area, where it will search for the ball
       alvik.brake();
       delay(2000);
     }
