@@ -39,6 +39,8 @@ void loop() {
     Serial.print(rgb_colors[2]);
     Serial.print("\n");
     if ((rgb_colors[0] == 6 || rgb_colors[0] == 5) && (rgb_colors[1] == 5) && (rgb_colors[2] == 5 || rgb_colors[2] == 4)){ // If the triple (R,G,B) is any of these values, strong indication that yellow is below the Alvik
+      alvik.left_led.set_color(1,0,0); // brake lights
+      alvik.right_led.set_color(1,0,0);
       alvik.brake();
       delay(2000);
     }
