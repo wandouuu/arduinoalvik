@@ -9,6 +9,7 @@ float kp = 50.0;
 // List containing colors of RGB
 int rgb_colors[3];
 int incomingByte = 0;
+String readString;
 
 
 void setup() {
@@ -55,11 +56,21 @@ void loop() {
 
       Serial.println("calculate");
 
-      while(Serial.available() == 0){
+      while(Serial.available() <= 0){
         alvik.brake();
-      } else{
-        incomingByte = Serial.readline();
+      } 
+      while(Serial.available()){
+        delay(3);
+        if (Serial.available() > 0 ){
+          char c = Serial.read();
+          readString += c;
+        }
       }
+      int distance = readString.toInt();
+      alvik.rotate(distance);
+  
+      
+    
     }
 
     
