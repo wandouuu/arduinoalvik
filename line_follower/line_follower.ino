@@ -25,7 +25,7 @@ void setup() {
 void loop() {
   while (!alvik.get_touch_cancel()){
 
-
+    alvik.set_illuminator(false);
     alvik.get_line_sensors(line_sensors[0], line_sensors[1], line_sensors[2]);
     alvik.get_color_raw(rgb_colors[0],rgb_colors[1],rgb_colors[2]); // returns RGB values into the list rgb_colors
     error = calculate_center(line_sensors[0], line_sensors[1], line_sensors[2]);
@@ -38,13 +38,20 @@ void loop() {
     Serial.print("\t");
     Serial.print(rgb_colors[2]);
     Serial.print("\n");
-    if ((rgb_colors[0] == 6 || rgb_colors[0] == 5) && (rgb_colors[1] == 5) && (rgb_colors[2] == 5 || rgb_colors[2] == 4)){ // If the triple (R,G,B) is any of these values, strong indication that yellow is below the Alvik
+    if ((rgb_colors[0] == 7) && (rgb_colors[1] == 7 || rgb_colors[1] == 6) && (rgb_colors[2] == 6)){ // If the triple (R,G,B) is any of these values, strong indication that yellow is below the Alvik
       alvik.left_led.set_color(1,0,0); // brake lights
       alvik.right_led.set_color(1,0,0);
       alvik.brake();
       delay(2000);
+      alvik.rotate(12);
+      delay(2000);
+      alvik.set_wheels_speed(15,15);
+      delay(2000);
+      alvik.brake();
+      delay(3000);
     }
 
+    
     if (control > 0.2){
       alvik.left_led.set_color(1,0,0);
       alvik.right_led.set_color(0,0,0);
