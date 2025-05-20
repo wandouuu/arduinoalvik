@@ -8,11 +8,14 @@ float control = 0;
 float kp = 50.0;
 // List containing colors of RGB
 int rgb_colors[3];
+int incomingByte = 0;
 
 
 void setup() {
   Serial.begin(115200);
-  while((!Serial)&&(millis()>3000));
+  while(!Serial){
+    ; // wait for USB serial to come out
+  }
   alvik.begin();
   alvik.left_led.set_color(0,0,1);
   alvik.right_led.set_color(0,0,1);
@@ -32,12 +35,12 @@ void loop() {
     control = error * kp;
 
     // For Serial Monitoring
-    Serial.print(rgb_colors[0]);
-    Serial.print("\t");
-    Serial.print(rgb_colors[1]);
-    Serial.print("\t");
-    Serial.print(rgb_colors[2]);
-    Serial.print("\n");
+    // Serial.print(rgb_colors[0]);
+    // Serial.print("\t");
+    // Serial.print(rgb_colors[1]);
+    // Serial.print("\t");
+    // Serial.print(rgb_colors[2]);
+    // Serial.print("\n");
     if ((rgb_colors[0] == 7) && (rgb_colors[1] == 7 || rgb_colors[1] == 6) && (rgb_colors[2] == 6)){ // If the triple (R,G,B) is any of these values, strong indication that yellow is below the Alvik
       alvik.left_led.set_color(1,0,0); // brake lights
       alvik.right_led.set_color(1,0,0);
@@ -45,10 +48,18 @@ void loop() {
       delay(2000);
       alvik.rotate(12);
       delay(2000);
-      alvik.set_wheels_speed(15,15);
+      alvik.set_wheels_speed(10,10);
       delay(2000);
       alvik.brake();
       delay(3000);
+
+      Serial.println("calculate");
+
+      while(Serial.available() == 0){
+        alvik.brake();
+      } else{
+        incomingByte = Serial.readline();
+      }
     }
 
     
