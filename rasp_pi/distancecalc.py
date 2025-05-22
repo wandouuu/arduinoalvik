@@ -5,6 +5,7 @@ import imutils
 import cv2
 import os
 
+<<<<<<< HEAD
 # Semih's Bounds
 # ORANGE_LOWER = np.array([6, 120, 160])    
 # ORANGE_UPPER = np.array([26, 255, 255])   
@@ -12,6 +13,11 @@ KERNEL = np.ones((5, 5), np.uint8)
 # Brendan's Bounds
 ORANGE_LOWER = np.array([4,140,58])
 ORANGE_UPPER = np.array([12,214,129])
+=======
+ORANGE_LOWER = np.array([6, 120, 160])    
+ORANGE_UPPER = np.array([26, 255, 255])   
+KERNEL = np.ones((5, 5), np.uint8)       
+>>>>>>> debabce5fcbed667ccc2bd0700a9b7bcfb759ddf
 
 
 def find_marker(image):
@@ -34,6 +40,7 @@ def find_marker(image):
 def distance_to_camera(knownWidth_cm, focalLength_px, perWidth_px):
     return (knownWidth_cm * focalLength_px) / perWidth_px
 
+<<<<<<< HEAD
 # Semih's Known Stuff
 # KNOWN_DISTANCE_CM = 33.50    
 # KNOWN_WIDTH_CM    = 4.0
@@ -43,6 +50,13 @@ KNOWN_DISTANCE_CM = 18.25
 KNOWN_WIDTH_CM = 4.0
 
 calib_path = "/home/waterlooletmein/calib_bren.jpg"
+=======
+
+KNOWN_DISTANCE_CM = 33.50    
+KNOWN_WIDTH_CM    = 4.0    
+
+calib_path = "/home/waterlooletmein/calibcalc.jpg"
+>>>>>>> debabce5fcbed667ccc2bd0700a9b7bcfb759ddf
 if not os.path.isfile(calib_path):
     raise FileNotFoundError(f"calibration image missing")
 
