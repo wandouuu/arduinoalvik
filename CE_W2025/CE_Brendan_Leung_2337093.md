@@ -273,12 +273,14 @@ void loop() {
       alvik.brake();
       delay(3000);
 
-      // Alvik sends a message to 
+      // Alvik sends a message to Pi through Serial
       Serial.println("photo");
 
+      // While the Alvik does not receive any bytes, it remains at a standstill
       while(Serial.available() <= 0){
         alvik.brake();
       } 
+      // Once there is bytes flowing, the Alvik decodes the bytes which are characters and concatenates them into a string for the full message
       while(Serial.available()){
         delay(3);
         if (Serial.available() > 0 ){
@@ -286,7 +288,9 @@ void loop() {
           readString += c;
         }
       }
-      int distance = readString.toInt();
+
+      // Using the information that Alvik has received from the Pi, it calculates the speed it needs to reach the object in five seconds
+      int distance = readString.toInt(); // toInt() method is necessary because the message received from the Pi is a String type
       int time = 5; // seconds
       float diameter = 3.4;
       float rpm = 60*distance/(3.14159*diameter*time);
@@ -296,7 +300,7 @@ void loop() {
     
     }
 
-    
+    // Lights to indicate what the Alvik is doing (turning, straight, etc.)
     if (control > 0.2){
       alvik.left_led.set_color(1,0,0);
       alvik.right_led.set_color(0,0,0);
@@ -336,8 +340,130 @@ float calculate_center(const int left, const int center, const int right){
   return centroid;
 }
 ```
+
+<p>With just a few lines of code, we were able to send and receive messages between the Alvik and the Raspberry Pi. We used <a href="https://forum.arduino.cc/t/read-line-from-serial/98251">this forum post</a> to help us read entire lines of messages from the Pi, while this <a href = "https://protonestiot.medium.com/communication-between-esp32-and-raspberry-pi-using-uart-7b776786c08a">fantastic post from Protonest IoT</a> provided us with the explanations and code required to communicate between the Pi and the Alvik. Also, since we must take a new photo every time the Alvik was at the line, this <a href = "https://www.youtube.com/watch?v=nx8gDSS1vO4">video</a> helped us program the process of taking a picture with the Pi Camera and storing it in a file on the Raspberry Pi. Below is the code from the Pi's end, which we have combined with the distance calculation software. Refer to the above code snippets for more details on the distance calculation segments of the code.</p>
+
+```py
+
+## Libraries for taking photos and serial communication on Pi's end
+import serial, time
+from picamera import PiCamera
+import time
+import math
+
+# Necessary packages for distance calculations
+from imutils import paths
+import numpy as np
+import imutils
+import cv2
+import os
+
+# See previous code snippets for details
+KERNEL = np.ones((5, 5), np.uint8)       
+ORANGE_LOWER = np.array([4,140,58])
+ORANGE_UPPER = np.array([12,214,129])
+
+# Establish Serial Communication from the USB port
+ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
+time.sleep(2)
+
+# Create a camera instance of PiCamera() to take photos
+camera = PiCamera()
+
+# See previous code snippets for details
+def find_marker(image):
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    mask = cv2.inRange(hsv, ORANGE_LOWER, ORANGE_UPPER)
+
+    mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, KERNEL, iterations=1)
+    mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, KERNEL, iterations=1)
+
+    cnts = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    cnts = imutils.grab_contours(cnts)
+    if not cnts:
+        return None
+    c = max(cnts, key=cv2.contourArea)
+    if cv2.contourArea(c) < 200:
+        return None
+    (x, y), radius = cv2.minEnclosingCircle(c)
+    return (x, y), radius
+
+# See previous code snippets for details
+def distance_to_camera(knownWidth_cm, focalLength_px, perWidth_px):
+    return (knownWidth_cm * focalLength_px) / perWidth_px
+
+
+# See Previous code snippets for details
+KNOWN_DISTANCE_CM = 18.25
+KNOWN_WIDTH_CM = 4
+
+# See Previous code snippets for details
+calib_path = "insert calibration photo path here"
+if not os.path.isfile(calib_path):
+    raise FileNotFoundError(f"calibration image missing")
+
+# See Previous code snippets for details
+calib_image = cv2.imread(calib_path)
+res = find_marker(calib_image)
+if res is None:
+    raise RuntimeError("No ball found")
+(center0, radius0) = res
+perWidth0 = 2 * radius0 
+focalLength_px = (perWidth0 * KNOWN_DISTANCE_CM) / KNOWN_WIDTH_CM
+
+
+while True:
+  # While on loop, the Pi reads its serial input for any bytes (messages)
+	line = ser.readline().decode('utf-8').strip()
+
+  # If the line from the Alvik writes "photo" (see Alvik's Serial communication end)
+	if line == "photo":
+		time.sleep(2) # Wait 2 seconds
+
+    # Take a photo named dist.jpg in some file directory
+		camera.capture("/home/mydir/images/dist.jpg")
+
+    # For every image in the images directory
+		for imagePath in sorted(paths.list_images("/home/mydir/images")):
+			# Image is read
+      image = cv2.imread(imagePath)
+      # Find the ping pong ball in image
+			res = find_marker(image)
+    # If there is no ping pong ball in image, nothing is sent
+		if res is None:
+			dist_cm = None
+    # If there is a ping pong ball in image
+		else:
+			(x, y), radius = res
+			perWidth = 2 * radius
+      # Calculates the ping pong ball's distance to the Pi Camera (Alvik)
+			dist_cm = distance_to_camera(KNOWN_WIDTH_CM, focalLength_px, perWidth)
+      # Message is prepared
+			message = f"{str(math.floor(dist_cm))
+			}"
+      # The message must be encoded into bytes for transmission
+			encoded_message = message.encode()
+      # Pi writes to Alvik the message with the distance which the Alvik will use for its calculations
+			ser.write(encoded_message)
+		time.sleep(5)
+		break
+		
+```
+<p>&nbsp;&nbsp;&nbsp;&nbsp; At this point in the development of all our software components, it was extremely cool seeing all of our various features that we wished to implement come together and work together the way they did. We began seeing results from breaking our project into smaller parts which we then combined together here, of which we are extremely proud. We will leave with a snippet of us testing out our Serial communication and distance calculations using this unconventional setup!</p>
+
+<figure>
+    <img src="images/test_setup.JPG"
+    alt = "Test Setup During Software Development"
+    width = "500">
+    <figcaption><em>Figure 2. Lots of wires needed when we tested serial communication and distance calculation together!</em></figcaption>
+</figure>
+
+
 <li><b>Sensor Documentation</b></li>
 <p>&nbsp;&nbsp;&nbsp;&nbsp; During the development of my project, we used tried out certain functions of sensors that were not used in the final product. Nevertheless, we will document their functions and present sample code for their uses.  The most notable sensor we have used extensively but its role in my project was reduced is the time of flight (ToF) sensor. The infrared (IR) sensors and the colour sensors, meanwhile, are used in every part of my project. We will begin with the time of flight sensor. </p>
+
+
+
 <ul>
 <li>Time of Flight Sensor</li>
 <p>&nbsp;&nbsp;&nbsp;&nbsp; The purpose of the ToF sensor is to calculate the distance between the Alvik and its surrounding environment. It achieves this by calculating the time it takes for light to travel from the Alvik and back. Knowing the speed of light and the time it takes to travel back to the Alvik, it is able to calculate the distance between objects. This is similar to using an ultrasonic sensor to measure distance, only that the sensor emits light instead of ultrasonic frequencies. Now, the Alvik is able to calculate the distance objects directly in front of it up to objects forty-five degrees to its left or right. Furthermore, the Alvik can detect objects around forty-five degrees below or above it as well. We encountered trouble during our project using the Alvik's ToF sensors, where it would start hallucinating objects in front of it and stopping despite objects not present in front of it. This forced us to abandon using the sensor altogether due to its inconsistency. </p>
