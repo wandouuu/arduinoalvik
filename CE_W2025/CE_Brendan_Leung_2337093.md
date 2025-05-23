@@ -222,8 +222,8 @@ cv2.destroyAllWindows()
 <p>&nbsp;&nbsp;&nbsp;&nbsp; With this strategy, a major downside we encountered is that we needed to take a calibration photo every time the ping pong balls found themselves in new lighting situations, since the colours were always different. Had we used an image detection model, this would not be necessary. Also, we had to always ensure that the whole ping pong ball was enclosed by the model. Otherwise, it would deliver inaccurate results. This was a major milestone in our project because this was required to tell the Alvik how far the ping pong ball is positioned and enable it to travel that distance. For that, we used serial communication between the Alvik and the Raspberry Pi. </p>
 <p>&nbsp;&nbsp;&nbsp;&nbsp; We found that establishing serial communication via Universal Serial Bus (USB) between the Alvik and the Raspberry Pi was quite straightforward.  We used C++ because of its serial capabilities, which we were not able to deploy with MicroPython on Alvik's end. Obviously, both the Alvik and Raspberry Pi must be connected via USB to communicate with each other. Here is the code from Alvik's end: </p>
 
-```arduino
-// Conta
+```ino
+// Contains Serial features
 #include "Arduino_Alvik.h"
 Arduino_Alvik alvik;
 String readString;
