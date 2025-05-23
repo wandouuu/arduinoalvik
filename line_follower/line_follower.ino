@@ -34,15 +34,14 @@ void loop() {
     alvik.get_color_raw(rgb_colors[0],rgb_colors[1],rgb_colors[2]); // returns RGB values into the list rgb_colors
     error = calculate_center(line_sensors[0], line_sensors[1], line_sensors[2]);
     control = error * kp;
-
     // For Serial Monitoring
-    // Serial.print(rgb_colors[0]);
-    // Serial.print("\t");
-    // Serial.print(rgb_colors[1]);
-    // Serial.print("\t");
-    // Serial.print(rgb_colors[2]);
-    // Serial.print("\n");
-    if ((rgb_colors[0] == 7) && (rgb_colors[1] == 7 || rgb_colors[1] == 6) && (rgb_colors[2] == 6)){ // If the triple (R,G,B) is any of these values, strong indication that yellow is below the Alvik
+    Serial.print(rgb_colors[0]);
+    Serial.print("\t");
+    Serial.print(rgb_colors[1]);
+    Serial.print("\t");
+    Serial.print(rgb_colors[2]);
+    Serial.print("\n");
+    if ((rgb_colors[0] == 5 || rgb_colors[0] == 4) && (rgb_colors[1] == 4) && (rgb_colors[2] == 4)){ // If the triple (R,G,B) is any of these values, strong indication that yellow is below the Alvik
       alvik.left_led.set_color(1,0,0); // brake lights
       alvik.right_led.set_color(1,0,0);
       alvik.brake();
@@ -54,7 +53,7 @@ void loop() {
       alvik.brake();
       delay(3000);
 
-      Serial.println("calculate");
+      Serial.println("photo");
 
       while(Serial.available() <= 0){
         alvik.brake();
@@ -67,8 +66,11 @@ void loop() {
         }
       }
       int distance = readString.toInt();
-      alvik.rotate(distance);
-  
+      int time = 5; // seconds
+      float diameter = 3.4;
+      float rpm = 60*distance/(3.14159*diameter*time);
+      alvik.set_wheels_speed(rpm,rpm);
+      delay(time*1000);
       
     
     }
