@@ -53,7 +53,7 @@
 </ul>
 </ul>
 <p>&nbsp;&nbsp;&nbsp;&nbsp; The code specific to the Alvik was developed using the Arduino IDE, while the code for the Raspberry Pi was written on the Pi's text editor. All of Alvik's functions can be found on <a href = "https://docs.arduino.cc/tutorials/alvik/api-overview/">Alvik's API</a>, which provides all the details of each method. It is important to note that while Arduino claims that all functions work between MicroPython and C++, we encountered runtime errors where the C++ compiler was unable to locate a function like alvik.drive(). We used Alvik's API extensively in our project, making this a valuable site for learning how to make the Alvik move, how to use its sensors, etc. We also used Arduino's own courses, found <a href = "https://www.arduino.cc/education/courses">here</a>, which helped us learn early on how to make Alvik follow a line and detect objects in front of it. It is a fantastic way to familiarize yourself with all that Alvik offers out-of-the-box before trying out more ambitious ideas. </p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp; To detect the ping pong balls, we used OpenCV, a library used for real-time computer vision, which runs locally on the Raspberry Pi and then sends the information back to the Alvik using serial communication. The code below, inspired by <a href="https://github.com/freedomwebtech/colortracking/blob/main/test.py">this GitHub repository</a>, allows us to identify orange coloured ping pong balls. We initially wished to deploy a machine learning model to identify our ping pong balls; however, it was hard to deploy because of compatibility issues between Windows and Raspberry Pi. So, we elected to detect colours instead because it was compatible and, more importantly, lightweight to run on the Raspberry Pi. Still, OpenCV provides us with a powerful computer vision library that suits our needs.</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; To detect the ping pong balls, we used OpenCV, a library used for real-time computer vision, which runs locally on the Raspberry Pi and then sends the information back to the Alvik using serial communication. The code below, inspired by <a href="https://github.com/freedomwebtech/colortracking/blob/main/test.py">this GitHub repository</a>, allows us to identify orange coloured ping pong balls. We initially wished to deploy a machine learning model to identify our ping pong balls; however, it was hard to deploy because of compatibility issues between Windows and Raspberry Pi. So, we elected to detect colours instead because it was compatible and, more importantly, lightweight to run on the Raspberry Pi. Still, OpenCV provides us with a powerful computer vision library that suits our needs. NumPy was used extensively to store HSV values, while OS provided us with an easier way to manage file directories.</p>
 
 ```py
 # Import OpenCV and NumPy Libraries
@@ -219,7 +219,123 @@ for imagePath in sorted(paths.list_images("path of photo goes here")): # Once th
 
 cv2.destroyAllWindows()
 ```
-<p>&nbsp;&nbsp;&nbsp;&nbsp; With this strategy, a major downside we encountered is that we needed to take a calibration photo every time the ping pong balls found themselves in new lighting situations, since the colours were always different. Had we used an image detection model, this would not be necessary. Also, we had to always ensure that the whole ping pong ball was enclosed by the model. Otherwise, it would deliver inaccurate results. This was a major milestone in our project because this was required to tell the Alvik how far the object is positioned. For that, we used serial communication between the Alvik and the Raspberry Pi. </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; With this strategy, a major downside we encountered is that we needed to take a calibration photo every time the ping pong balls found themselves in new lighting situations, since the colours were always different. Had we used an image detection model, this would not be necessary. Also, we had to always ensure that the whole ping pong ball was enclosed by the model. Otherwise, it would deliver inaccurate results. This was a major milestone in our project because this was required to tell the Alvik how far the ping pong ball is positioned and enable it to travel that distance. For that, we used serial communication between the Alvik and the Raspberry Pi. </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; We found that establishing serial communication via Universal Serial Bus (USB) between the Alvik and the Raspberry Pi was quite straightforward.  We used C++ because of its serial capabilities, which we were not able to deploy with MicroPython on Alvik's end. Obviously, both the Alvik and Raspberry Pi must be connected via USB to communicate with each other. Here is the code from Alvik's end: </p>
+
+```arduino
+// Conta
+#include "Arduino_Alvik.h"
+Arduino_Alvik alvik;
+String readString;
+
+void setup() {
+  // In the setup, it is important to initialize Serial to receive and send serial messages
+  Serial.begin(115200);
+  while(!Serial){
+    ; // wait for USB serial to come out
+  }
+  alvik.begin();
+  alvik.left_led.set_color(0,0,1);
+  alvik.right_led.set_color(0,0,1);
+
+  while(!alvik.get_touch_ok()){
+    delay(50);
+  }
+}
+
+void loop() {
+  while (!alvik.get_touch_cancel()){
+
+    alvik.set_illuminator(false); // turns off the illuminator below the Alvik for the duration of the program
+    alvik.get_line_sensors(line_sensors[0], line_sensors[1], line_sensors[2]); // returns IR data to the list line_sensors
+    alvik.get_color_raw(rgb_colors[0],rgb_colors[1],rgb_colors[2]); // returns RGB values into the list rgb_colors
+    error = calculate_center(line_sensors[0], line_sensors[1], line_sensors[2]); // calculates deviation from the line
+    control = error * kp; # the amount of adjustment Alvik needs to stay on course (on the line)
+    // For Serial Monitoring: prints the RGB colours the Alvik sees with its colours sensors
+    Serial.print(rgb_colors[0]);
+    Serial.print("\t");
+    Serial.print(rgb_colors[1]);
+    Serial.print("\t");
+    Serial.print(rgb_colors[2]);
+    Serial.print("\n");
+
+    // Once the Alvik detects a white gap in the line, it stops to check for the ping pong ball around it
+    if ((rgb_colors[0] == 5 || rgb_colors[0] == 4) && (rgb_colors[1] == 4) && (rgb_colors[2] == 4)){ // If the triple (R,G,B) is any of these values, strong indication that white is below the Alvik (depends on the white)
+      // Alvik moves forward to a position where it will not redetect the white line a second time
+      alvik.left_led.set_color(1,0,0); 
+      alvik.right_led.set_color(1,0,0);
+      alvik.brake();
+      delay(2000);
+      alvik.rotate(12);
+      delay(2000);
+      alvik.set_wheels_speed(10,10);
+      delay(2000);
+      alvik.brake();
+      delay(3000);
+
+      // Alvik sends a message to 
+      Serial.println("photo");
+
+      while(Serial.available() <= 0){
+        alvik.brake();
+      } 
+      while(Serial.available()){
+        delay(3);
+        if (Serial.available() > 0 ){
+          char c = Serial.read();
+          readString += c;
+        }
+      }
+      int distance = readString.toInt();
+      int time = 5; // seconds
+      float diameter = 3.4;
+      float rpm = 60*distance/(3.14159*diameter*time);
+      alvik.set_wheels_speed(rpm,rpm);
+      delay(time*1000);
+      
+    
+    }
+
+    
+    if (control > 0.2){
+      alvik.left_led.set_color(1,0,0);
+      alvik.right_led.set_color(0,0,0);
+    }
+    else{
+      if (control < -0.2){
+        alvik.left_led.set_color(0,0,0);
+        alvik.right_led.set_color(1,0,0);
+      }
+      else{
+        alvik.left_led.set_color(0,1,0);
+        alvik.right_led.set_color(0,1,0);
+      }
+    }
+
+    alvik.set_wheels_speed(30-control, 30+control);
+    delay(100);
+  }
+  
+  while (!alvik.get_touch_ok()){
+    alvik.left_led.set_color(0,0,1);
+    alvik.right_led.set_color(0,0,1);
+    alvik.brake();
+    delay(100);
+  }
+}
+
+// Line following calculating the error from the line itself
+float calculate_center(const int left, const int center, const int right){
+  float centroid = 0.0; 
+  float sum_weight = left + center + right;
+  float sum_values = left + center * 2 + right * 3;
+  if (sum_weight!=0.0){                                                         // divide by zero protection
+    centroid=sum_values/sum_weight;
+    centroid=-centroid+2.0;                                                     // so it is right on robot axis Y
+  }
+  return centroid;
+}
+```
 <li><b>Sensor Documentation</b></li>
 <p>&nbsp;&nbsp;&nbsp;&nbsp; During the development of my project, we used tried out certain functions of sensors that were not used in the final product. Nevertheless, we will document their functions and present sample code for their uses.  The most notable sensor we have used extensively but its role in my project was reduced is the time of flight (ToF) sensor. The infrared (IR) sensors and the colour sensors, meanwhile, are used in every part of my project. We will begin with the time of flight sensor. </p>
 <ul>
