@@ -609,7 +609,7 @@ while True:
 </ul>
 
 ### Results
-
+<p>&nbsp;&nbsp;&nbsp;&nbsp; My teammate and I were able to implement line following, colour recognition and serial communication features. </p>
 
 ### Analysis
 
@@ -625,4 +625,4 @@ while True:
 
 
 ### Acknowledgements
-<p>I would like to thank my teammate, Semih Eski, who took time and effort to dedicate on working on our project. I would also like to thank Professor Joel Trudeau for the opportunity he gave me to learn how to develop a project from scratch.</p>
+<p>I would like to thank my teammate, Semih Eski, who took time and effort to dedicate on working on our project. I would also like to thank Professor Joel Trudeau and his paracurricular organization, SPACE, for the opportunity he gave me to learn how to develop a project from scratch.</p>
