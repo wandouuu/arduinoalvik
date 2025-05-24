@@ -452,7 +452,7 @@ while True:
 <p>&nbsp;&nbsp;&nbsp;&nbsp; At this point in the development of all our software components, it was extremely cool seeing all of our various features that we wished to implement come together and work together the way they did. We began seeing results from breaking our project into smaller parts which we then combined together here, of which we are extremely proud. We will leave with a snippet of us testing out our Serial communication and distance calculations using this unconventional setup!</p>
 
 <figure>
-    <img src="images/test_setup.JPG"
+    <img src="images/test_setup.jpg"
     alt = "Test Setup During Software Development"
     width = "500">
     <figcaption><em>Figure 2. Lots of wires needed when we tested serial communication and distance calculation together!</em></figcaption>
@@ -525,7 +525,7 @@ while True:
 <li>Colour Sensor</li>
 <p>&nbsp;&nbsp;&nbsp;&nbsp; The Alvik also has a colour sensor on the bottom of the Alvik which helps identify colours on various surfaces. The Alvik can detect colours using Red Green Blue (RGB) or Hue, saturation and value (HSV) spectrums. For the purposes of our project, we use the Alvik's colours sensors to help the Alvik know when to stop and look at its surroundings for the ping pong balls it is trying to pick up. We first struggled with this sensor because either the room we conducted colour sensing on was dark or too bright, which hindered the accuracy of the colours sensed by the Alvik. We then found that if we returned the Red Green Blue (RGB) values as integers of a list, not as float values, we were able to make the Alvik stop at a yellow line 100% of the time. The Alvik can also label colours, but we found this to be much more unreliable than using explicit values for RGB, since the readings are not as precise as with exact values that the sensors record. Shown below is a code snippet of how to use the colour sensors to detect a yellow line. By incorporating the get_color_raw() method in a while loop, which we have omitted for space, we are able to obtain the colours readings at any time. Note that we had to identify the RGB values of the yellow tape using the Serial Monitor prior to program our Alvik. </p>
 
-```arduino
+```ino
 // List containing colors of RGB
 int rgb_colors[3];
 
