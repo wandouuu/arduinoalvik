@@ -21,7 +21,13 @@
 </figure>
 <p>&nbsp;&nbsp;&nbsp;&nbsp;These days helped both my teammate and I become familiar with the robot and its capabilities. At the time, we thought of making a robot that could push objects off the table; of course, without making the Alvik fall off the table itself! Because our program was quite straightforward, we wanted to make something more elaborate. </p>
 <p>&nbsp;&nbsp;&nbsp;&nbsp;My teammate and I interviewed a Masters student from the University of Toronto specializing in robotics and AI to help guide us in our project. My ambition was soon met with realistic expectations, as she told us that AI would be quite difficult and we should only implement it if we had time. Then, she told us that we should divide our project into little chunks, tackling each small problem progressively and combining them together later. This strategy helped me in the project development because, as a beginner, I was quite overwhelmed with the amount of features I had to consider. Instead, breaking the project up into smaller, more manageable pieces made the project seem more achievable. This is how Semih and I tackled different parts of the project. </p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;This idea had major implications on how my teammate and I worked on our project because we knew we had a learning path. We had a roadmap. We knew we wanted to make a robot capable of driving itself around and have some image recognition capabilities. With that, in the months following, we focused on developing Alvik’s functions: line following, object detection, colour detection and etc. My teammate, meanwhile, focused on creating the robotic arm and integrating it with our robot. In our final stage, together, we implemented all these smaller chunks together in what will be a robot which is capable of line following and picking up coloured ping pong balls in its vicinity.</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;This idea had major implications on how my teammate and I worked on our project because we knew we had a learning path. We had a roadmap. We knew we wanted to make a robot capable of driving itself around and have some image recognition capabilities. With that, in the months following, we focused on developing Alvik’s functions: line following, object detection, colour detection and etc. My teammate, meanwhile, focused on creating the robotic arm and integrating it with our robot. Below is a snapshot of the prototype of the Alvik along with its robotic arm, which my teammate made:</p>
+<figure>
+  <img src = "images/prototype_alvik.jpg"
+  alt = "Prototype of Alvik and its Robotic Arm">
+  <figcaption><em>Figure 2. The Alvik is shown with a Raspberry Pi holder near the front of the Alvik while a robotic arm sits as a counterbalance towards the back of the Alvik.</em></figcaption>
+</figure>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; In our final stage, together, we implemented all these smaller chunks together in what will be a robot which is capable of line following and picking up coloured ping pong balls in its vicinity.</p>
 </ul>
 
 ### Implementation
@@ -121,7 +127,7 @@ cv2.destroyAllWindows()
     <img src="images/color_detection.jpg"
     alt = "Orange Ping Pong Ball Perfectly Enclosed by Colour Detection Algorithm"
     width = "500">
-    <figcaption><em>Figure 2. The colour you wish to detect should be perfectly enclosed like the photo shown above</em></figcaption>
+    <figcaption><em>Figure 3. The colour you wish to detect should be perfectly enclosed like the photo shown above</em></figcaption>
 </figure>
 
 ```py
@@ -462,7 +468,7 @@ while True:
     <img src="images/test_setup.jpg"
     alt = "Test Setup During Software Development"
     width = "500">
-    <figcaption><em>Figure 3. Lots of wires needed when we tested serial communication and distance calculation together!</em></figcaption>
+    <figcaption><em>Figure 4. Lots of wires needed when we tested serial communication and distance calculation together!</em></figcaption>
 </figure>
 
 
@@ -609,10 +615,10 @@ while True:
 </ul>
 
 ### Results
-<p>&nbsp;&nbsp;&nbsp;&nbsp; My teammate and I were able to implement line following, colour recognition and serial communication features. </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; My teammate and I were able to implement line following, colour recognition and serial communication features on the Arduino Alvik. Along the development of the robot, we were unable to implement object detection into the Alvik since the Time of Flight sensor delivered unpredictable and inconsistent readings. Regardless, our final Alvik runs on power banks which power the Raspberry Pi, allowing the Alvik and the Pi to communicate between each other and identify the location of the ping pong ball on a designated area of our track that the Alvik stops at. It is able to then move forward exactly to the position of the ping pong ball and stop there. If our project was fully complete, then the Alvik would be able to pick the ball off the ground and then put it in a bin along the track. Unfortunately, we failed to make the robotic arm work, but given the time we wish to integrate that into the Alvik to pick up the ping pong ball. </p>
 
-### Analysis
-
+### Analysis / Lessons Learned
+<p>&nbsp;&nbsp;&nbsp;&nbsp;While we are disappointed that we could not implement the robotic arm, which was the final piece of the puzzle, we came out of this project with a better understanding of how to construct a learning path towards our end goal, which was to acquire this very experience. As a team, we were able to coordinate our roles well, which helped us reach this late stage in our project's development. </p>
 
 ### Discussion and Conclusion
 <p>&nbsp;&nbsp;&nbsp;&nbsp; Looking back at how the project came to be, I have realized how much changes, iterations, failures and achievements I have gone through. It all first began by experimenting with the Alvik with the idea that I would be able to use it to navigate autonomously around a room with a camera which could use object detection and feed that information to the robot. I had bold, ambitious ideas, but I lacked the experience needed to make that feasible. This reality came hard at me when I first played with the Arduino Alvik robot given to us. I was able to make it push pieces of paper off the table without the Alvik falling on the ground, but soon enough I encountered issues when the idea I had programmed the Alvik to do did not turn out the way I expected it to. The way <em>I</em> thought the robot would execute the code was not the way the robot <em>actually</em> ran it. With this problem, I thought to myself that if I would do something more complicated, more errors could arise. So, my teammate and I had to simplify things. In the hunt for advice, we turned towards a Masters student at the University of Toronto, specializing in AI and robotics, who helped carve us a roadmap to completing our project. She helped us realize that we had to tackle our projects in smaller steps instead of tackling the entire project at once. This approach helped us break our project into multiple, more manageable pieces that could then later be combined together in our final product. </p>
