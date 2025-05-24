@@ -115,7 +115,14 @@ while True:
 cap.release()
 cv2.destroyAllWindows()
 ```
-<p>&nbsp;&nbsp;&nbsp;&nbsp; The success rate of this piece of software heavily depends on the lighting conditions in which we were in. We struggled mostly to land consistent results, given that the lighting conditions in which we found ourselves when testing our software were always different. We always had to constantly tweak the lower and upper bounds for colour so that the orange ball is detected in each specific lighting conditions in which we were in. Not only did the orange ball have to be detected, but it also had to enclose the orange ball entirely and accurately pinpoint its center. This is because this was used to calculate the distance between the Alvik and the ping pong in front of it, using the code below, which was developed with the help of <a href = "https://pyimagesearch.com/2015/01/19/find-distance-camera-objectmarker-using-python-opencv/?utm_source=chatgpt.com">this website</a>. </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; The success rate of this piece of software heavily depends on the lighting conditions in which we were in. We struggled mostly to land consistent results, given that the lighting conditions in which we found ourselves when testing our software were always different. We always had to constantly tweak the lower and upper bounds for colour so that the orange ball is detected in each specific lighting conditions in which we were in. Not only did the orange ball have to be detected, but it also had to enclose the orange ball entirely and accurately pinpoint its center. This is because this was used to calculate the distance between the Alvik and the ping pong in front of it, using the code below, which was developed with the help of <a href = "https://pyimagesearch.com/2015/01/19/find-distance-camera-objectmarker-using-python-opencv/?utm_source=chatgpt.com">this website</a>. Your image should look like this: </p>
+
+<figure>
+    <img src="images/color_detection.jpg"
+    alt = "Orange Ping Pong Ball Perfectly Enclosed by Colour Detection Algorithm"
+    width = "500">
+    <figcaption><em>Figure 2. The colour you wish to detect should be perfectly enclosed like the photo shown above</em></figcaption>
+</figure>
 
 ```py
 # Import the necessary packages
@@ -455,7 +462,7 @@ while True:
     <img src="images/test_setup.jpg"
     alt = "Test Setup During Software Development"
     width = "500">
-    <figcaption><em>Figure 2. Lots of wires needed when we tested serial communication and distance calculation together!</em></figcaption>
+    <figcaption><em>Figure 3. Lots of wires needed when we tested serial communication and distance calculation together!</em></figcaption>
 </figure>
 
 
