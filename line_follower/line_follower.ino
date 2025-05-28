@@ -41,7 +41,7 @@ void loop() {
     Serial.print("\t");
     Serial.print(rgb_colors[2]);
     Serial.print("\n");
-    if ((rgb_colors[0] == 5 || rgb_colors[0] == 4) && (rgb_colors[1] == 4) && (rgb_colors[2] == 4)){ // If the triple (R,G,B) is any of these values, strong indication that yellow is below the Alvik
+    if ((rgb_colors[0] == 5) && (rgb_colors[1] == 6 || rgb_colors[1] == 5) && (rgb_colors[2] == 5)){ // If the triple (R,G,B) is any of these values, strong indication that yellow is below the Alvik
       alvik.left_led.set_color(1,0,0); // brake lights
       alvik.right_led.set_color(1,0,0);
       alvik.brake();
@@ -59,24 +59,25 @@ void loop() {
         alvik.brake();
       } 
       while(Serial.available()){
-        delay(3);
         if (Serial.available() > 0 ){
           char c = Serial.read();
           readString += c;
         }
       }
-      int distance = readString.toInt();
-      int time = 5; // seconds
-      float diameter = 3.4;
-      float rpm = 60*distance/(3.14159*diameter*time);
+      int distance = readString.toInt(); // mm
+      int rpm = 10;
+      int time = 60000*distance/(rpm*3.14159*3.4); // milliseconds
+      Serial.println(time); 
       alvik.set_wheels_speed(rpm,rpm);
-      delay(time*1000);
+      delay(time);
+      alvik.brake();
+      delay(3000);
       
     
     }
 
     
-    if (control > 0.2){
+    else if (control > 0.2){
       alvik.left_led.set_color(1,0,0);
       alvik.right_led.set_color(0,0,0);
     }
