@@ -7,13 +7,15 @@ time.sleep(2)
 
 camera = PiCamera()
 
-
-
+# Loops until it receives a photo string from the Alvik
 while True:
+	# Reads serial data from Alvik
 	line = ser.readline().decode('utf-8').strip()
 	if line == "photo":
 		time.sleep(2)
-		camera.capture("/home/waterlooletmein/images/bren_photo1.jpg")
+		# Captures photo from Pi Camera and stores it as a file in a certain directory
+		camera.capture("/directory1/directory2/nameofphoto.jpg")
+		# Writes to ALvik that the photo has been taken
 		ser.write(b'2')
 		break
 		
