@@ -1,9 +1,8 @@
+# Import necessary packages
 import serial, time
 from picamera import PiCamera
 import time
 import math
-
-# import the necessary packages
 from imutils import paths
 import numpy as np
 import imutils
@@ -23,6 +22,7 @@ time.sleep(2)
 
 camera = PiCamera()
 
+# Function that identifies and returns the position and radius of the object of the colour you're trying to detect
 def find_marker(image):
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(hsv, ORANGE_LOWER, ORANGE_UPPER)
@@ -40,14 +40,11 @@ def find_marker(image):
     (x, y), radius = cv2.minEnclosingCircle(c)
     return (x, y), radius
 
+# Function that calculates the distance of the object to the camera
 def distance_to_camera(knownWidth_cm, focalLength_px, perWidth_px):
     return (knownWidth_cm * focalLength_px) / perWidth_px
 
-# Semih's Known Stuff
-# KNOWN_DISTANCE_CM = 33.50    
-# KNOWN_WIDTH_CM    = 4.0
-
-# Brendan's Known Stuff
+# To calibrate the calculations, you must measure beforehand the distance of the object from the camera and its width
 KNOWN_DISTANCE_CM = 18.25
 KNOWN_WIDTH_CM = 4
 
@@ -74,7 +71,7 @@ while True:
 			res = find_marker(image)
 		if res is None:
 			dist_cm = 0
-        	print("No ball found.")
+			print("No ball found.")
             message = f"{str(math.floor(dist_cm))}"
 			encoded_message = message.encode()
 			ser.write(encoded_message)
