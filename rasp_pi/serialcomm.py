@@ -73,7 +73,11 @@ while True:
 			image = cv2.imread(imagePath)
 			res = find_marker(image)
 		if res is None:
-			dist_cm = None
+			dist_cm = 0
+        	print("No ball found.")
+            message = f"{str(math.floor(dist_cm))}"
+			encoded_message = message.encode()
+			ser.write(encoded_message)
 		else:
 			(x, y), radius = res
 			perWidth = 2 * radius
