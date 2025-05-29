@@ -97,8 +97,9 @@ for imagePath in sorted(paths.list_images("/home/waterlooletmein/images")):
         # Distance calculated
         dist_cm = distance_to_camera(KNOWN_WIDTH_CM, focalLength_px, perWidth)
 
-        # Circle created around the object with the specified colour range
+        # Position of center of object (ping pong ball) is identified
         center = (int(x), int(y))
+        # Circle created around the object with the specified colour range
         cv2.circle(image, center, int(radius), (0, 255, 0), 2)
         cv2.circle(image, center, 3, (0, 0, 255), -1)
 
