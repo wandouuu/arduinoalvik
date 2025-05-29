@@ -50,7 +50,7 @@ def find_marker(image):
     if cv2.contourArea(c) < 200:
         return None
 
-        # Position as well as the radius of the object is returned
+    # Position as well as the radius of the object is returned
     (x, y), radius = cv2.minEnclosingCircle(c)
     return (x, y), radius
 
@@ -82,7 +82,7 @@ res = find_marker(calib_image)
 if res is None:
     raise RuntimeError("No ball found")
 
-# Variables
+# Variables for the camera
 (center0, radius0) = res
 perWidth0 = 2 * radius0
 focalLength_px = (perWidth0 * KNOWN_DISTANCE_CM) / KNOWN_WIDTH_CM
@@ -102,6 +102,8 @@ while True:
 
         # Checks the photos and identifies the ball in the image (if there is one)
         for imagePath in sorted(paths.list_images("/directory1/directory2/folder_with_images")):
+
+            # Reads the image and determines if the colour is found by marking the object
             image = cv2.imread(imagePath)
             res = find_marker(image)
 
