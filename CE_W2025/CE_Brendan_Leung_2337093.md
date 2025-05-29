@@ -303,12 +303,14 @@ void loop() {
       }
 
       // Using the information that Alvik has received from the Pi, it calculates the speed it needs to reach the object in five seconds
-      int distance = readString.toInt(); // toInt() method is necessary because the message received from the Pi is a String type
-      int time = 5; // seconds
-      float diameter = 3.4;
-      float rpm = 60*distance/(3.14159*diameter*time);
-      alvik.set_wheels_speed(rpm,rpm);
-      delay(time*1000);
+      int distance = readString.toInt(); // mm
+      int rpm = 10; // rpm
+      int time = 60000*distance/(rpm*3.14159*3.4); // milliseconds
+      Serial.println(time); // prints the time needed in milliseconds in Serial Monitor
+      alvik.set_wheels_speed(rpm,rpm); // Wheel speed set for Alvik to approach object
+      delay(time); // Delays the exact time needed to travel the distance required
+      alvik.brake(); // Alvik stops for 3 seconds to show it has ended this operation
+      delay(3000);
       
     
     }
@@ -442,22 +444,28 @@ while True:
       image = cv2.imread(imagePath)
       # Find the ping pong ball in image
 			res = find_marker(image)
+
     # If there is no ping pong ball in image, nothing is sent
 		if res is None:
-			dist_cm = None
+      # Encodes message that the distance travelled should be zero, because no object was found
+			dist_cm = 0
+      print("No ball found.")
+      message = f"{str(math.floor(dist_cm))}"
+      encoded_message = message.encode()
+      ser.write(encoded_message)
+
     # If there is a ping pong ball in image
 		else:
-			(x, y), radius = res
-			perWidth = 2 * radius
+      (x, y), radius = res
+      perWidth = 2 * radius
       # Calculates the ping pong ball's distance to the Pi Camera (Alvik)
-			dist_cm = distance_to_camera(KNOWN_WIDTH_CM, focalLength_px, perWidth)
+      dist_cm = distance_to_camera(KNOWN_WIDTH_CM, focalLength_px, perWidth)
       # Message is prepared
-			message = f"{str(math.floor(dist_cm))
-			}"
+      message = f"{str(math.floor(dist_cm))}"
       # The message must be encoded into bytes for transmission
-			encoded_message = message.encode()
+      encoded_message = message.encode()
       # Pi writes to Alvik the message with the distance which the Alvik will use for its calculations
-			ser.write(encoded_message)
+      ser.write(encoded_message)
 		time.sleep(5)
 		break
 		
