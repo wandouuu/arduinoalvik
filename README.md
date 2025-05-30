@@ -38,6 +38,13 @@ This is an open-source autonomous vehicle project that uses an Arduino Alvik. It
 * SDA → SDA
 * SCL → SCL
 * GND → GND
+### Servos → PCA9685:
+* Servo 1 → PCA9685 Pin 0
+* Servo 2 → PCA9685 Pin 1
+* Servo 3 → PCA9685 Pin 2
+* Servo 4 → PCA9685 Pin 3
+* Servo 5 → PCA9685 Pin 4
+* Servo 6 → PCA9685 Pin 5
 ## Prerequisites
 * Python
 * Arduino IDE
