@@ -98,3 +98,20 @@ pip install numpy
 pip install imutils
 ```
 Hooray, you have installed now installed the necessary dependencies! You may now get to work!
+
+# How to Use
+1. Make a simple, circular track with a white gap at the beginning of a straight segment of track.
+2. Attach the wires as indicated in the Wiring Instructions. Mote that the camera should be facing the front of the Alvik.
+3. Ensure that the Alvik is sufficiently charged.
+4. Ensure that the Raspberry Pi is plugged into an outlet.
+5. Find the values of the white line where the Alvik will stop on the line following track and input them in the `line_follower.ino` if statement with the comparison operators with the rgb_colors list.
+6. Upload `serialcomm.py` to the Arduino Alvik using the Arduino IDE.
+7. Using `ball_color_detection.py`, ensure that the coloured ping pong ball is detected in your given lighting conditions. Adjust the parameters ORANGE_LOWER and ORANGE_UPPER as needed to detect the ping pong ball.
+8. Copy and paste these values across to serialcomm.py.
+9. Now, write the directory in `snap_photo.py` of where the calibration photo is stored. 
+10. Run the program `snap_photo.py` and disconnect the HDMI cable (ensure the Alvik and the Pi are connected via USB) and run the Alvik by turning it on and pressing the checkmark on the top of it.
+11. Once the photo is taken, ensure the calibration photo directory (calib_path variable) is the same as in `serialcomm.py`. 
+12. In `serialcomm.py`, write the directory in which the photo of the distance calculation photo will be taken in the capture method of the camera object.
+13. Run `serialcomm.py` and detach the HDMI cable, ensuring the Alvik and the Pi are connected via USB.
+14. Turn on Alvik and press its checkmark and watch it go!
+
