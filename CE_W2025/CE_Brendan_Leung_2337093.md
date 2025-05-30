@@ -44,6 +44,24 @@
 <li>PCA9685 Servo Driver</li>
 <li>Power Supplies</li>
 </ul>
+<li>Hardware Schematics</li>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; The serial connection between the Arduino Alvik and the Raspberry Pi is made via Universal Serial Bus (USB). The Alvik should be connected to the Raspberry Pi using its USB-C port, connected to the designated USB-A port on the Raspberry Pi, as shown in the diagram below. Note that if a different port is chosen, the USB port chosen to establish serial communication in the Python code will have to be changed.</p>
+
+<figure>
+    <img src="images/raspberry_pi_pi_side_01_orig.JPG"
+    alt = "Side image of the USB-A connection on the Raspberry Pi"
+    width = "500">
+    <figcaption><em>Figure 3. Connect the Alvik to the Raspberry Pi in the exact port on the Raspberry Pi as shown. The other end should be connected to the USB-C port of the Alvik.</em></figcaption>
+</figure>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp; To connect the servos, connect the female-to-female jumper wires between the Raspberry Pi and the Servo Driver as follows. Also, attach the Raspberry Pi Camera Module in the slot that is named "Camera". This is shown in the figure below:</p>
+<figure>
+    <img src="images/components_raspi_pca9685_i2c_with_servo.JPG"
+    alt = "Connections on the Raspberry Pi and between it and the Servo Drivers"
+    width = "500">
+    <figcaption><em>Figure 4. Connect the female-to-female wires as shown between the Raspberry Pi and the Servo Driver. Furthermore, connect the Raspberry Pi Camera Module in the "Camera" slot.</em></figcaption>
+</figure>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; Note that to read any information that is serially monitored by the Alvik or the Raspberry Pi, the Raspberry Pi (not the Alvik) must be connected to a monitor via HDMI. This is because the Alvik sends all its serial information to the Raspberry Pi, and the Raspberry Pi can display this information along with its own. Finally, the Raspberry Pi must be plugged into an outlet, while the Alvik can be charged. Ensure as well that the wiring has enough slack to allow for the Alvik to be mobile.</p>
 </ul>
 
 <li><b>Software Development</b></li>
@@ -127,7 +145,7 @@ cv2.destroyAllWindows()
     <img src="images/color_detection.jpg"
     alt = "Orange Ping Pong Ball Perfectly Enclosed by Colour Detection Algorithm"
     width = "500">
-    <figcaption><em>Figure 3. The colour you wish to detect should be perfectly enclosed like the photo shown above, with the red dot at the center.</em></figcaption>
+    <figcaption><em>Figure 5. The colour you wish to detect should be perfectly enclosed like the photo shown above, with the red dot at the center.</em></figcaption>
 </figure>
 
 ```py
@@ -476,7 +494,7 @@ while True:
     <img src="images/test_setup.jpg"
     alt = "Test Setup During Software Development"
     width = "500">
-    <figcaption><em>Figure 4. Lots of wires needed when we tested serial communication and distance calculation together!</em></figcaption>
+    <figcaption><em>Figure 6. Lots of wires needed when we tested serial communication and distance calculation together!</em></figcaption>
 </figure>
 
 
@@ -544,7 +562,7 @@ while True:
       adjustment = KP * error + KI * integral + KD * derivative
 ```
 <li>Colour Sensor</li>
-<p>&nbsp;&nbsp;&nbsp;&nbsp; The Alvik also has a colour sensor on the bottom of the Alvik which helps identify colours on various surfaces. The Alvik can detect colours using Red Green Blue (RGB) or Hue, saturation and value (HSV) spectrums. For the purposes of our project, we use the Alvik's colours sensors to help the Alvik know when to stop and look at its surroundings for the ping pong balls it is trying to pick up. We first struggled with this sensor because either the room we conducted colour sensing on was dark or too bright, which hindered the accuracy of the colours sensed by the Alvik. We then found that if we returned the Red Green Blue (RGB) values as integers of a list, not as float values, we were able to make the Alvik stop at a yellow line 100% of the time. The Alvik can also label colours, but we found this to be much more unreliable than using explicit values for RGB, since the readings are not as precise as with exact values that the sensors record. Shown below is a code snippet of how to use the colour sensors to detect a yellow line. By incorporating the get_color_raw() method in a while loop, which we have omitted for space, we are able to obtain the colours readings at any time. Note that we had to identify the RGB values of the yellow tape using the Serial Monitor prior to program our Alvik. </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; The Alvik also has a colour sensor on the bottom of the Alvik which helps identify colours on various surfaces. The Alvik can detect colours using Red Green Blue (RGB) or Hue, saturation and value (HSV) spectrums. For the purposes of our project, we use the Alvik's colours sensors to help the Alvik know when to stop and look at its surroundings for the ping pong balls it is trying to pick up. We first struggled with this sensor because either the room we conducted colour sensing on was dark or too bright, which hindered the accuracy of the colours sensed by the Alvik. It turns out it is quite unreliable because we had to change the integer RGB values each time we were in a new lighting situation by reading through the Serial monitor, but we managed to get it to work. The Alvik can also label colours, but we found this to be much more unreliable than using explicit values for RGB, since the readings are not as precise as with exact values that the sensors record. Shown below is a code snippet of how to use the colour sensors to detect a yellow line. By incorporating the get_color_raw() method in a while loop, which we have omitted for space, we are able to obtain the colours readings at any time. Note that we had to identify the RGB values of the yellow tape using the Serial Monitor prior to program our Alvik. </p>
 
 ```ino
 // List containing colors of RGB
@@ -626,7 +644,7 @@ while True:
 <p>&nbsp;&nbsp;&nbsp;&nbsp; My teammate and I were able to implement line following, colour recognition and serial communication features on the Arduino Alvik. Along the development of the robot, we were unable to implement object detection into the Alvik since the Time of Flight sensor delivered unpredictable and inconsistent readings. Regardless, our final Alvik runs on power banks which power the Raspberry Pi, allowing the Alvik and the Pi to communicate between each other and identify the location of the ping pong ball on a designated area of our track that the Alvik stops at. It is able to then move forward exactly to the position of the ping pong ball and stop there. If our project was fully complete, then the Alvik would be able to pick the ball off the ground and then put it in a bin along the track. Unfortunately, we failed to make the robotic arm work, but given the time we wish to integrate that into the Alvik to pick up the ping pong ball. The results of this project is demonstrated inside the following <a href = "https://www.youtube.com/watch?v=wflKDwHRH6M&ab_channel=wandou">YouTube</a> video.</p>
 
 ### Analysis / Lessons Learned
-<p>&nbsp;&nbsp;&nbsp;&nbsp;While we are disappointed that we could not implement the robotic arm, which was the final piece of the puzzle, we came out of this project with a better understanding of how to construct a learning path towards our end goal, which was to acquire this very experience. As a team, we were able to coordinate our roles well, which helped us reach this late stage in our project's development. We communicated our ideas effectively between each other: by documenting what we did on Discord so that each of us could know what had been done, by drawing images that help us visually understand what we are trying to achieve and more. Looking back, we could have better documented our code with comments because when one of us had the robot and new updates to the code were added, we would not understand it at first. We have now also acquired the experience and skills needed to make a project of this scale, whether they are technical, research or communication skills. Prior to getting the Alvik, we had limited knowledge about robotics, let alone hardware and software, but now we have a clearer understanding of how to learn how to integrate hardware and software together, along with debugging skills from all the problems we encountered, whether it was the ToF sensor, the colour detection sensor or how to even test our Alvik while we have yet to implement its batteries. We combined ideas from resources online and from our own brainstorming and adjusted each feature to our liking, resulting with an Alvik that has its feature set extended beyond its out-of-the-box features. </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;While I was disappointed that my teammate and I could not implement the robotic arm, which was the final piece of the puzzle, I came out of this project with a better understanding of how to construct a learning path towards my end goal, which was to acquire this very experience. As a team, we were able to coordinate our roles well, which helped us reach this late stage in our project's development. We communicated our ideas effectively between each other: by documenting what we did on Discord so that each of us could know what had been done, by drawing images that help us visually understand what we are trying to achieve and more. Looking back, we could have better documented our code with comments because when one of us had the robot and new updates to the code were added, we would not understand it at first. We have now also acquired the experience and skills needed to make a project of this scale, whether they are technical, research or communication skills. Prior to getting the Alvik, we had limited knowledge about robotics, let alone hardware and software, but now we have a clearer understanding of how to learn how to integrate hardware and software together, along with debugging skills from all the problems we encountered, whether it was the ToF sensor, the colour detection sensor or how to even test our Alvik while we have yet to implement its batteries. We combined ideas from resources online and from our own brainstorming and adjusted each feature to our liking, resulting with an Alvik that has its feature set extended beyond its out-of-the-box features. </p>
 
 ### Discussion and Conclusion
 <p>&nbsp;&nbsp;&nbsp;&nbsp; Looking back at how the project came to be, I have realized how much changes, iterations, failures and achievements I have gone through. It all first began by experimenting with the Alvik with the idea that I would be able to use it to navigate autonomously around a room with a camera which could use object detection and feed that information to the robot. I had bold, ambitious ideas, but I lacked the experience needed to make that feasible. This reality came hard at me when I first played with the Arduino Alvik robot given to us. I was able to make it push pieces of paper off the table without the Alvik falling on the ground, but soon enough I encountered issues when the idea I had programmed the Alvik to do did not turn out the way I expected it to. The way <em>I</em> thought the robot would execute the code was not the way the robot <em>actually</em> ran it.  So, my teammate and I had to simplify things. In the hunt for advice, we turned towards a Masters student at the University of Toronto, specializing in AI and robotics, who helped carve us a roadmap to completing our project. She helped us realize that we had to tackle our projects in smaller steps instead of tackling the entire project at once. This approach helped us break our project into multiple, more manageable pieces that could then later be combined together in our final product. </p>
@@ -649,4 +667,4 @@ while True:
 
 
 ### Acknowledgements
-<p>I would like to thank my teammate, Semih Eski, who took time and effort to dedicate on working on our project. I would also like to thank Professor Joel Trudeau and his paracurricular organization, SPACE, for the opportunity he gave me to learn how to develop a project from scratch.</p>
+<p>I would like to give a big thank you to my teammate, Semih Eski, who took time and effort to dedicate on working on our project. I would also like to thank Professor Joel Trudeau and his paracurricular organization, SPACE, for the opportunity he gave me to learn how to develop a project from scratch.</p>
