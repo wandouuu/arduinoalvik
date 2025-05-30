@@ -114,3 +114,7 @@ Hooray, you have installed now installed the necessary dependencies! You may now
 12. In `serialcomm.py`, write the directory in which the photo of the distance calculation photo will be taken in the capture method of the camera object.
 13. Run `serialcomm.py` and detach the HDMI cable, ensuring the Alvik and the Pi are connected via USB.
 14. Turn on Alvik and press its checkmark and watch it go!
+
+# Development Notes
+- Created as part of the MakerSPACE initiative and Making Things That Matter course at Dawson College.
+- Version 1.0.0
