@@ -101,7 +101,7 @@ Hooray, you have installed now installed the necessary dependencies! You may now
 
 # How to Use
 1. Make a simple, circular track with a white gap at the beginning of a straight segment of track.
-2. Attach the wires as indicated in the Wiring Instructions. Mote that the camera should be facing the front of the Alvik.
+2. Attach the wires as indicated in the Wiring Instructions. Note that the camera should be facing the front of the Alvik.
 3. Ensure that the Alvik is sufficiently charged.
 4. Ensure that the Raspberry Pi is plugged into an outlet.
 5. Find the values of the white line where the Alvik will stop on the line following track and input them in the `line_follower.ino` if statement with the comparison operators with the rgb_colors list.
