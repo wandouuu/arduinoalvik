@@ -15,3 +15,6 @@ This is an open-source autonomous vehicle project that uses an Arduino Alvik. It
 * Raspberry Pi 3B+
 * 3D printed robotic arm
 * PCA9685 
+# Getting Started
+## Prerequisites
+- 
